@@ -6,8 +6,8 @@ using System.IO;
 public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance;
-    public static int HighScore;
-    public static string PlayerName;
+    public int HighScore;
+    public string PlayerName;
 
     private void Awake()
     {

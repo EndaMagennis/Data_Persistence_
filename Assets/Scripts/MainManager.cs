@@ -68,6 +68,21 @@ public class MainManager : MonoBehaviour
         ScoreText.text = $"Score : {m_Points}";
     }
 
+    void SaveHighScore(int highScore)
+    {
+        int currentScore = m_Points;
+
+        if (currentScore > highScore)
+        {
+            highScore = currentScore;
+            PlayerDataManager.Instance.HighScore = highScore;
+        }
+        else
+        {
+            highScore = PlayerDataManager.Instance.HighScore;
+        }
+    }
+
     public void GameOver()
     {
         m_GameOver = true;
