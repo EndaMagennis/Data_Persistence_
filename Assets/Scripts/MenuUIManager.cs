@@ -8,7 +8,7 @@ public class MenuUIManager : MonoBehaviour
 {
     public void StartNew()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void Exit()
