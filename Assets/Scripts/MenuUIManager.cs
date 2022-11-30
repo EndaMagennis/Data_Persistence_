@@ -19,7 +19,11 @@ public class MenuUIManager : MonoBehaviour
         HighScore.text = "Best player: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
     }
 
-  
+    private void Update()
+    {
+    }
+
+
     public void StartNew()
     {
         SceneManager.LoadScene(1);
@@ -27,11 +31,10 @@ public class MenuUIManager : MonoBehaviour
 
     public void ResetBestPlayer()
     {
-        if (PlayerDataManager.Instance.bestPlayer != null || PlayerDataManager.Instance.bestScore != 0)
-        {
-            PlayerDataManager.Instance.bestPlayer = null;
-            PlayerDataManager.Instance.bestScore = 0;
-        }
+        PlayerDataManager.Instance.SavePlayerData(null, 0);
+        PlayerDataManager.Instance.LoadPlayerData();
+        HighScore.text = "Best player: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
+
     }
 
     public void SetPlayerName()
