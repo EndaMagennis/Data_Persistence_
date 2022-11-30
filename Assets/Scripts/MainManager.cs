@@ -109,4 +109,6 @@ public class MainManager : MonoBehaviour
             BestScore.text = "Best Score: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
         }
     }
+
+    
 }
