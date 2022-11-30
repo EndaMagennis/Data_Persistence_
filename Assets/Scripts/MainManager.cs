@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,15 +11,17 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public TMP_Text ScoreText;
+    public TMP_Text PlayerName;
+    public TMP_Text BestScore;
     public GameObject GameOverText;
-    
+
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
+  
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +39,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        PlayerName.text = "Player Name: " + PlayerDataManager.Instance.playerName;
+        SetBestPlayer();
     }
 
     private void Update()
@@ -59,33 +64,49 @@ public class MainManager : MonoBehaviour
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            
         }
     }
 
+   
     void AddPoint(int point)
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
-    }
-
-    void SaveHighScore(int highScore)
-    {
-        int currentScore = m_Points;
-
-        if (currentScore > highScore)
-        {
-            highScore = currentScore;
-            PlayerDataManager.Instance.HighScore = highScore;
-        }
-        else
-        {
-            highScore = PlayerDataManager.Instance.HighScore;
-        }
+        PlayerDataManager.Instance.score = m_Points;
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+        CheckBestPlayer();
         GameOverText.SetActive(true);
+    }
+
+    public void ReturnToStart()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void CheckBestPlayer()
+    {
+        if(PlayerDataManager.Instance.score >= PlayerDataManager.Instance.bestScore)
+        {
+            PlayerDataManager.Instance.bestScore = PlayerDataManager.Instance.score;
+            PlayerDataManager.Instance.bestPlayer = PlayerDataManager.Instance.playerName;
+        }
+        PlayerDataManager.Instance.SavePlayerData(PlayerDataManager.Instance.bestPlayer, PlayerDataManager.Instance.bestScore);
+    }
+
+    public void SetBestPlayer()
+    {
+        if(PlayerDataManager.Instance.bestPlayer == null && PlayerDataManager.Instance.bestScore == 0)
+        {
+            BestScore.text = "  ";
+        }
+        else
+        {
+            BestScore.text = "Best Score: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
+        }
     }
 }
