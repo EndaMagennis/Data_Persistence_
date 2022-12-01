@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,20 +12,23 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public TMP_Text ScoreText;
-    public TMP_Text PlayerName;
-    public TMP_Text BestScore;
+    [SerializeField] TMP_Text ScoreText;
+    [SerializeField] TMP_Text PlayerName;
+    [SerializeField] TMP_Text BestScore;
     public GameObject GameOverText;
+    public GameObject PauseText;
 
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+    private bool m_IsPaused = false;
 
   
     // Start is called before the first frame update
     void Start()
     {
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,7 +61,9 @@ public class MainManager : MonoBehaviour
                 Ball.transform.SetParent(null);
                 Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
             }
+            
         }
+        
         else if (m_GameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -66,6 +72,7 @@ public class MainManager : MonoBehaviour
             }
             
         }
+        PauseGame();
     }
 
    
@@ -74,6 +81,22 @@ public class MainManager : MonoBehaviour
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
         PlayerDataManager.Instance.score = m_Points;
+    }
+
+    public void PauseGame()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape) && m_IsPaused == false)
+        {
+            PauseText.SetActive(true);
+            Time.timeScale = 0;
+            m_IsPaused = true;                                  
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && m_IsPaused == true)
+        {
+            PauseText.SetActive(false);
+            Time.timeScale = 1;
+            m_IsPaused = false; 
+        }
     }
 
     public void GameOver()
@@ -85,17 +108,19 @@ public class MainManager : MonoBehaviour
 
     public void ReturnToStart()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
 
     public void CheckBestPlayer()
     {
-        if(PlayerDataManager.Instance.score >= PlayerDataManager.Instance.bestScore)
+        if(PlayerDataManager.Instance.score > PlayerDataManager.Instance.bestScore)
         {
             PlayerDataManager.Instance.bestScore = PlayerDataManager.Instance.score;
             PlayerDataManager.Instance.bestPlayer = PlayerDataManager.Instance.playerName;
+            PlayerDataManager.Instance.leaderboard.Insert(0, PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore);
         }
-        PlayerDataManager.Instance.SavePlayerData(PlayerDataManager.Instance.bestPlayer, PlayerDataManager.Instance.bestScore);
+        PlayerDataManager.Instance.SavePlayerData(PlayerDataManager.Instance.bestPlayer, PlayerDataManager.Instance.bestScore, PlayerDataManager.Instance.leaderboard);
     }
 
     public void SetBestPlayer()

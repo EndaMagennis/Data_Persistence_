@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerDataManager : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class PlayerDataManager : MonoBehaviour
     public string playerName;
     public string bestPlayer;
     public int bestScore;
- 
+    public List<string> leaderboard;
+
+
     private void Awake()
     {
         if(Instance != null)
@@ -22,6 +25,7 @@ public class PlayerDataManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
     }
 
     [System.Serializable]
@@ -29,17 +33,21 @@ public class PlayerDataManager : MonoBehaviour
     {
         public string savePlayer;
         public int saveScore;
+        public List<string> SaveLeaderboard;
+
     }
 
     //saving playerdata
-    public void SavePlayerData(string bestPlayer, int bestScore)
+    public void SavePlayerData(string bestPlayer, int bestScore, List<string> leaderboard)
     {
         PlayerData data = new PlayerData();
         data.savePlayer = bestPlayer;
         data.saveScore = bestScore;
+        data.SaveLeaderboard = leaderboard;
 
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+ 
     }
 
     public void LoadPlayerData()
@@ -52,6 +60,7 @@ public class PlayerDataManager : MonoBehaviour
 
             bestPlayer = data.savePlayer;
             bestScore = data.saveScore;
+            leaderboard = data.SaveLeaderboard;
         }
     }
 

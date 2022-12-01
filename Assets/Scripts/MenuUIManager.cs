@@ -5,18 +5,22 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UIElements;
 
 public class MenuUIManager : MonoBehaviour
 {
-    public string playerName;
-    public TMP_InputField playerNameInputField;
-    public TMP_Text HighScore;
+    [SerializeField] string playerName;
+    [SerializeField] TMP_InputField playerNameInputField;
+    [SerializeField] TMP_Text HighScore;
+    public List<string> leaderboard;
+
 
 
     private void Start()
     {
         PlayerDataManager.Instance.LoadPlayerData();
         HighScore.text = "Best player: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
+
     }
 
     private void Update()
@@ -26,12 +30,17 @@ public class MenuUIManager : MonoBehaviour
 
     public void StartNew()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1);        
+    }
+
+    public void ViewLeaderBoard()
+    {
+        SceneManager.LoadScene(2);
     }
 
     public void ResetBestPlayer()
     {
-        PlayerDataManager.Instance.SavePlayerData(null, 0);
+        PlayerDataManager.Instance.SavePlayerData(null, 0, new List<string>{null});
         PlayerDataManager.Instance.LoadPlayerData();
         HighScore.text = "Best player: " + PlayerDataManager.Instance.bestPlayer + ": " + PlayerDataManager.Instance.bestScore;
 
